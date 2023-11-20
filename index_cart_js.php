@@ -1,41 +1,107 @@
 <?php
-
 require __DIR__ . '/functions.php';
 
+
+
+define( 'DB_NAME', 'pharmacie' );
+
+/** Database username */
+define( 'DB_USER', 'root' );
+
+/** Database password */
+define( 'DB_PASSWORD', '' );
+
+/** Database hostname */
+define( 'DB_HOST', '127.0.0.1' );
+
+/** Database charset to use in creating database tables. */
+define( 'DB_CHARSET', 'utf8' );
+
+/** The database collate type. Don't change this if in doubt. */
+define( 'DB_COLLATE', '' );
+
+
 // Create connection
-$conn = get_database();
-
-require __DIR__ . '/actions.php';
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD,DB_NAME);
 
 
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
 
-// $_POST['email'] = "chuanxd52@gmail.com";
-// $_POST['password'] = "123456";
+$sql = "SELECT * FROM myproducts;";
+$myproducts = $conn->query($sql);
 
-// $page = $_SERVER['SCRIPT_NAME'];
-// unset($_SESSION['email']);
 
+
+require __DIR__ . '/cart.php';
 ?>
 
 
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="vi">
 
-<head>
-<title>Thực phẩm chức năng Châu Âu | La Pharmacie</title>
-<?php echo get_head();?>
-</head>
+<?php echo $head;?>
+
+
 
 <body class="page-search no-apple-pay">
 
 
-<?php require __DIR__ . '/header.php'?>
+    <div class="l-header__main-area-wrapper" style="border-bottom: 1px solid #CECECE;padding-bottom:5px;">
+        <div class="l-header__main-area">
 
+            <?php echo $logo;?>
+            <?php echo $left_header;?>
+            <?php echo $right_header;?>
+
+            <div class="l-header__break m-hide-on-sticky-for-large"></div>
+            <div class="c-hamburger l-header__hamburger"> <button class="c-hamburger__button" aria-controls="hamburger-navigation" aria-expanded="false" aria-label="Ouvrir le menu" data-js-hamburger-button=""> </button> <div aria-live="polite" class="h-show-for-sr" aria-atomic="true" data-js-hamburger-aria-live=""></div> 
+
+
+                <div class="c-hamburger__content" id="hamburger-navigation"> 
+                    <div class="c-hamburger__item m-navigation">
+                        <div class="c-navigation__wrapper"> <nav class="c-navigation"> <ul class="c-navigation__list m-level-1">
+
+                        <!-- menu -->
+                        <?php
+                        $sql = "SELECT * FROM mymenu;";
+                        $mymenu = $conn->query($sql);
+                        if ($mymenu->num_rows > 0) {
+
+                          // output data of each row
+                        while($row = $mymenu->fetch_assoc()) {
+                        echo sprintf( <<<EOT
+                        <li class="c-navigation__item m-parent m-level-1 m-offers  " > <span class="c-navigation__item-title m-accordion-control m-level-1 "> <a class="c-navigation__link m-level-1" href="%s" >  %s  </a>  </span></li>
+                        EOT , $row["href"], $row["name"]);
+                          }
+                        } else {
+
+                        }
+                        $conn->close();
+                        ?>
+
+
+                       </ul> </nav> </div> 
+                    </div>
+                </div> 
+            <?php echo $search_button;?>
+            </div> 
+        </div>
+
+        <?php echo $search_form;?>
+
+
+
+
+    </div>
 
 
 <main class="l-plp">
         
+
 
         <div class="l-plp__top">
             
@@ -47,12 +113,31 @@ require __DIR__ . '/actions.php';
                      <div class="c-plp-top-banner__category-name"> Tất cả  </div> 
                 </div>
             </div>
-            <div class="l-plp__breadcrumbs h-show-for-large"><nav class="c-breadcrumbs "> <ol class="c-breadcrumbs__list">    <li class="c-breadcrumbs__item"> <a class="c-breadcrumbs__link" href="index.php"> <span class="c-breadcrumbs__text">Trang chủ</span> </a> <span class="c-breadcrumbs__item-separator" aria-hidden="true"></span> </li>     <li class="c-breadcrumbs__item"> <span class="c-breadcrumbs__text c-breadcrumbs__item-text">Tất cả</span> </li>   </ol> </nav> </div>
+            <div class="l-plp__breadcrumbs h-show-for-large"><nav class="c-breadcrumbs "> <ol class="c-breadcrumbs__list" aria-label="Vous êtes ici" data-js-scrollable-items="">    <li class="c-breadcrumbs__item"> <a class="c-breadcrumbs__link" href="./"> <span class="c-breadcrumbs__text">Trang chủ</span> </a> <span class="c-breadcrumbs__item-separator" aria-hidden="true"></span> </li>     <li class="c-breadcrumbs__item"> <span class="c-breadcrumbs__text c-breadcrumbs__item-text">Tất cả</span> </li>   </ol> </nav> </div>
+            <div class="l-plp__tools">
+                <div class="l-plp__heading">
+                    <h1 class="c-refinements__category-name h-show-for-large"></h1>
+                </div>
+                <div class="l-plp__results-count">
+                    <div class="c-results-count  " aria-live="polite" aria-atomic="true" data-component="search/ResultsCount" data-component-options="{&quot;dataModelId&quot;:&quot;resultscount&quot;,&quot;templateName&quot;:&quot;search/resultscount&quot;}" data-component-force="" data-component-id="e_hzjq702m6mu"> 145 produits </div> 
+                </div>
+                <div class="l-plp__sorting">
+                    <div class="c-sorting c-text-field m-float m-focus " data-component="search/Sorting" data-analytics="{&quot;action&quot;:&quot;sort&quot;,&quot;category&quot;:&quot;{{dataLayer.page.category}}&quot;,&quot;label&quot;:&quot;best-sellers&quot;,&quot;extraData&quot;:{&quot;event_name&quot;:&quot;use_filters&quot;,&quot;filter_type&quot;:&quot;sort&quot;,&quot;filter_value&quot;:&quot;best-sellers&quot;}}" data-component-id="i_tikrc5uuq4">  <label for="select-097050" class="c-sorting__label c-select__label c-text-field__label m-float">Trier par</label> <select class="c-sorting__field " aria-label="Tri" data-js-sorting-field="" data-js-field="" name="sort-order" id="select-097050">  <option value="https://www.laroche-posay.fr/produits?srule=best-sellers" data-id="best-seller" selected="selected"> Meilleures Ventes </option>  <option value="https://www.laroche-posay.fr/produits?srule=newest-first" data-id="New"> Nouveautés </option>  <option value="https://www.laroche-posay.fr/produits?srule=Price%20Ascending" data-id="Price-ascending"> Prix (par ordre croissant) </option>  <option value="https://www.laroche-posay.fr/produits?srule=Price%20Descending" data-id="Price-descending"> Prix (par ordre décroissant) </option>  </select>  </div> 
+                </div>
+                
+                <div class="l-plp__comparison-toggle"></div>
+                <div class="l-plp__refinements-cta">
+                    <button type="button" class="c-refinements-toggler" data-component="search/RefinementsToggler"> Affiner <span class="c-refinements-toggler__qty" data-js-qty=""></span> </button> 
+                </div>
+            </div>
+
+
 
 
         </div>
-
-
+        <div class="c-plp-top-banner__results-count">
+            <div class="c-results-count  " data-component="search/ResultsCount" data-component-options="{&quot;dataModelId&quot;:&quot;resultscount&quot;,&quot;templateName&quot;:&quot;search/resultscount&quot;}" data-component-force="" data-component-id="e_ynf6ag74ls"> 145 produits </div> 
+        </div>
 
 
         <div class="l-plp__main">
@@ -74,86 +159,32 @@ require __DIR__ . '/actions.php';
 
 <div class="c-product-grid">      
 
+
+
+
 <?php 
 
-$sql = "SELECT * FROM myproducts;";
-$myproducts = $conn->query($sql);
 
 if ($myproducts->num_rows > 0) {
 
   // output data of each row
 $it=1;
-while(($item = $myproducts->fetch_assoc()) and ($it <= 1000)) {
-    $price = (float) $item["price"];
+while(($row = $myproducts->fetch_assoc()) and ($it <= 10)) {
+    $price = (float) $row["price"];
     $price = (int) ($price*25*1.4);
     $price = number_format($price*1000, 0, ',', ' ');
 
-    $id = $item["id"];
-    $name = $item["name"];
-    $img= $item["img"];
+    $id = $row["id"];
+    $name = $row["name"];
+    $img= $row["img"];
     $href = ".";
-    $description = $item["description"];
+    $description = $row["description"];
     $rating = 0;
-    $item["href"] = $href;
-    $item["rating"] = $rating;
-
-    $dom = new DOMDocument();
-    $dom->loadHTML($item['img']);
-    $img=$dom->getElementsByTagName('img')[0];
-
-
-    // $attrs=$img->attributes;
-    // print_r($attrs);
-    $fname_img=$img->getAttribute('src');
-    if (str_contains($fname_img, 'http:') or str_contains($fname_img, 'https:')){
-        $sx= 1;
-        $sy= 1;
-    } else {
-        $size = getimagesize($fname_img);
-        $sx=(float) $size[0];
-        $sy=(float) $size[1];
-    };
-
-
-
-    $mleft = ($sy - $sx)/$sy*50;
-    $mtop = ($sx - $sy)/$sx*100;
-    if ($mleft < 0) {$mleft = 0; };
-    if ($mtop < 0) {$mtop = 0; };
-    // $mleft += 20;
-    $mleft = number_format($mleft,0,'.','');
-
-
-    if ($mleft > 0) {
-        $img->setAttribute("style", "max-width:100%;max-height:100%;margin-left:".$mleft."%;width:auto;height:auto;" );
-        // $fname_img=$img->getAttribute('style');
-        // echo $fname_img;
-        $dom->appendChild($img);
-        $item["img"]=$dom->saveHTML();
-    };
-
-    if ($mtop > 0) {
-        $img->setAttribute("style", "max-width:100%;max-height:100%;margin-top:".$mtop."%;width:auto;height:auto;" );
-        // $fname_img=$img->getAttribute('style');
-        // echo $fname_img;
-        $dom->appendChild($img);
-        $item["img"]=$dom->saveHTML();
-    };
-
-    // $img->setAttribute("style", "border:solid;bottom:0;" );
-    // $item["img"]=$dom->saveHTML();
-
-
-    $price = (float) $item["price"];
-    $price = (int) ($price*25*1.4);
-    $price = number_format($price*1000, 0, ',', ' ');
-    $item["price"] = $price;
-
-    echo add_product($item);
+    echo add_product($id,$name,$href,$description,$price,$img,$rating);
 
     $it=$it+1;
   }
-}
+} 
 
 
 
@@ -169,16 +200,39 @@ while(($item = $myproducts->fetch_assoc()) and ($it <= 1000)) {
         </div>
 </main>
 
+		<div id="shopping-cart">
+			<div class="txt-heading">
+				<h1>Shopping cart</h1>
+			</div>
+			<a onClick="emptyCart()" id="btnEmpty">Empty Cart</a>
+			<table class="tbl-cart" cellpadding="10" cellspacing="1">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th class='text-right' width="10%">Unit Price</th>
+						<th class='text-right' width="5%">Quantity</th>
+						<th class='text-right' width="10%">Sub Total</th>
+					</tr>
+				</thead>
+				<!--  Cart table to load data on "add to cart" action -->
+				<tbody id="cartTableBody">
+				</tbody>
+				<tfoot>
+					<tr>
+						<td class="text-right">Total:</td>
+						<td id="itemCount" class="text-right" colspan="2"></td>
+						<td id="totalAmount" class="text-right"></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="./js/cart.js"></script>
 
-<?php 
 
-// $filename="./Create_db_Python/Onatera/64f82cea496ff059221299.jpg";
-// $size = getimagesize($filename);
-// print_r($size);
-// echo $size[0];
-// echo $size[1];
-// print_r($_SESSION["cart_item"]);
-?>
+
+
+
 
 
 
